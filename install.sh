@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export ATUALIZAR='sim'
-export DIR_PADRAO=/home/openerp/v7
+export DIR_PADRAO=/home/openerp
 export USUARIO=
 export USUARIO_BD=''
 export SENHA_BD=''
