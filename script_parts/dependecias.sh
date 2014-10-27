@@ -1,7 +1,10 @@
 #!/bin/bash
 
 echo "Instalando python"
-apt-get install python-pip
+apt-get install python-pip --yes
+
+echo "Instalando Bazaar"
+apt-get install bzr --yes
 
 echo "Instalando python dependencias"
 
