@@ -24,13 +24,21 @@ timeout --kill=3 3 ./openerp-server --save \
 EOF
 
 su  $USUARIO << EOF
-echo "Movendo arquivo de configuracao"
+	echo "Movendo arquivos de configuracao"
 
-cd ~
-mv .openerp_serverrc v7/server/openerp.conf
+	cd ~
+	mv .openerp_serverrc server/openerp.conf
 
+	mv server/debian/openerp.conf server/
+exit
 EOF
 
-exit
 cd /
 
+if [ -f etc/openerp/openerp.conf ]
+then
+	echo ">>> O link simbólico OPENERP.CONF já existe <<<"
+else
+	mkdir /etc/$USUARIO
+	ln -s $DIR_PADRAO/server/openerp.conf /etc/$USUARIO
+fi
