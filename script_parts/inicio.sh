@@ -2,7 +2,8 @@
 
 cd /
 
-if ["$ATUALIZAR" = "sim"] then
+if [echo $ATUALIZAR =: "sim"];
+then
 	echo "Atualizando o sistema"
 	apt-get update
 	apt-get upgrade --yes
