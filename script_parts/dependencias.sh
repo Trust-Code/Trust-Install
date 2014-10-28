@@ -3,10 +3,10 @@
 echo "Instalando python"
 apt-get install python-pip --yes
 
-echo "Instalando Bazaar"
+echo ">>> Instalando Bazaar <<<"
 apt-get install bzr --yes
 
-echo "Instalando python dependencias"
+echo ">>> Instalando python dependencias <<<"
 
 apt-get install python-dateutil python-feedparser python-gdata python-ldap \
 	python-libxslt1 python-mako python-mock python-openid python-psycopg2 \
@@ -21,7 +21,10 @@ pip install jinja2
 pip install docutils
 pip install requests
 
-echo "Instalando PySped, aqui pode dar erro facilmente"
+echo ">>> Instalando as dependências do Report_Aeroo_ooo <<<"
+apt-get install python-genshi python-openoffice python-lxml python-cairo openoffice.org python-uno --yes
+
+echo ">>> Instalando PySped, aqui pode dar erro facilmente <<<"
 apt-get install libxmlsec1-dev --yes
 apt-get install libxml2-dev --yes
 
