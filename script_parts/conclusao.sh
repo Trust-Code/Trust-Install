@@ -27,18 +27,57 @@ su  $USUARIO << EOF
 	echo "Movendo arquivos de configuracao"
 
 	cd ~
-	mv .openerp_serverrc server/openerp.conf
-
-	mv server/debian/openerp.conf server/
+	mv .openerp_serverrc server/openerp-server.conf
 exit
 EOF
 
 cd /
 
-if [ -f etc/openerp/openerp.conf ]
+echo ">>> Criando link simbólico do arquivo OPENERP-SERVER <<<"
+if [ -f usr/bin/openerp-server ]
+then
+	echo ">>> O link simbólico OPENERP-SERVER já existe <<<"
+else
+	ln -s $DIR_PADRAO/server/openerp-server usr/bin/
+fi
+
+echo ">>> Criando link simbólico do arquivo OPENERP-SERVER.CONF <<<"
+if [ -f etc/openerp/openerp-server.conf ]
 then
 	echo ">>> O link simbólico OPENERP.CONF já existe <<<"
 else
 	mkdir /etc/$USUARIO
-	ln -s $DIR_PADRAO/server/openerp.conf /etc/$USUARIO
+	ln -s $DIR_PADRAO/server/openerp-server.conf /etc/$USUARIO
 fi
+
+echo ">>> Criando arquivo de LOG <<<"
+if [ -f var/log/openerp/openerp-server.log ]
+then
+	echo ">>> O arquivo de log OPENERP-SERVER.LOG já existe <<<"
+else
+	mkdir var/log/openerp
+	touch var/log/openerp/openerp-server.log
+	chown -R $USUARIO: var/log/openerp
+fi
+
+echo ">>> Criando arquivo de PID <<<"
+if [ -f var/run/openerp-server.pid ]
+then
+	echo ">>> O arquivo de pid OPENERP-SERVER.PID já existe <<<"
+else
+	touch var/run/openerp-server.pid
+	chown $USUARIO: var/run/openerp-server.pid
+fi
+
+echo ">>> Criando o serviço OPENERP-SERVER <<<"
+if [ -f etc/init.d/openerp-server ]
+then
+	echo ">>> O ETC/INIT.D/OPENERP-SERVER de serviço já existe <<<"
+else
+	ln -s $DIR_PADRAO/server/debian/openerp.init etc/init.d/openerp-server
+	chmod u+x /etc/init.d/openerp-server
+	update-rc.d openerp-server defaults
+fi
+
+
+
