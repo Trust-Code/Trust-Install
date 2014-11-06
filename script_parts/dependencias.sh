@@ -23,6 +23,10 @@ pip install requests
 
 echo ">>> Instalando as dependências do Report_Aeroo_ooo <<<"
 apt-get install python-genshi python-openoffice python-lxml python-cairo openoffice.org python-uno --yes
+python $DIR_PADRAO/extras/aeroolib/aeroolib/setup.py install
+
+
+
 
 echo ">>> Instalando PySped, aqui pode dar erro facilmente <<<"
 apt-get install libxmlsec1-dev --yes
