@@ -1,5 +1,14 @@
 #!/bin/bash
 
+
+echo ""
+echo "Deseja iniciar o Odoo e configurar o servidor? S ou N"
+read PERGUNTA
+
+if [ "$PERGUNTA" != "S" ]; then
+	exit 0
+fi
+
 echo "ajustando as Permissões do Diretorio"
 
 chown -R $USUARIO: $DIR_PADRAO

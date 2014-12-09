@@ -1,21 +1,21 @@
 #!/bin/bash
 
-echo ">>> Instalando e atualizando o repositório oficial do POSTGRESQL <<<"
-cd /
-echo "# Repositório Oficial do Postgresql" >> etc/apt/sources.list
-echo "deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" >> etc/apt/sources.list
+set -e
 
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-apt-get update
+echo ""
+echo "Deseja instalar o postgres? S ou N >>>"
+read PERGUNTA
 
-echo "Instalando banco de dados"
-apt-get install postgresql-9.3 --yes
+if [ "$PERGUNTA" == "S" ];
+then
+	echo "Instalando banco de dados"
+	apt-get install postgresql-9.3 --yes
+fi
 
-echo "Criando usuario"
-su postgres << EOF
-	createuser --createdb --username postgres --no-createrole --no-superuser --no-password $USUARIO_BD
-#	createuser [-d -U postgres -R -S -w] $USUARIO
-	psql -c "ALTER USER $USUARIO_BD WITH PASSWORD '$SENHA_BD'" -d template1
+echo "Criando usuario no banco de dados: $1"
+su postgres <<EOF
+	createuser --createdb --username postgres --no-createrole --no-superuser --no-password $1
+	psql -c "ALTER USER $1 WITH PASSWORD '$SENHA_BD'" -d template1
 	exit
 EOF
 
