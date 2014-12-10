@@ -2,6 +2,7 @@
 
 set -e
 USUARIO=$1
+DIR_PADRAO="/home/$USUARIO"
 
 echo ""
 echo "Executar atualização do sistema operacional? S ou N"
@@ -29,7 +30,6 @@ if [ "$CONFIRMAR" == "S" ]; then
 		echo "Usuário ja existe, passando adiante: $USUARIO"
 	else
 		echo "Criando usuário"
-		DIR_PADRAO = "/home/" + $USUARIO
 		adduser --system --home $DIR_PADRAO --group --shell /bin/bash $USUARIO
 	fi
 else

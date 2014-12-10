@@ -28,13 +28,13 @@ if [ "$PERGUNTA" == "S" ]; then
 	pip install requests
 
 	echo ">>> Instalando as dependências do Report_Aeroo_ooo <<<"
-	apt-get install python-genshi python-openoffice python-lxml python-cairo openoffice.org python-uno --yes
-	python $DIR_PADRAO/extras/aeroolib/aeroolib/setup.py install
+	apt-get install python-genshi python-lxml python-cairo --yes
+	#python $DIR_PADRAO/extras/aeroolib/aeroolib/setup.py install
 
-	cp /arqs/openoffice.sh /etc/init.d/
+	#cp /arqs/openoffice.sh /etc/init.d/
 
-	chmod u+x /etc/init.d/openoffice.sh
-	update-rc.d openoffice.sh defaults
+	#chmod u+x /etc/init.d/openoffice.sh
+	#update-rc.d openoffice.sh defaults
 
 	echo ">>> Instalando PySped, aqui pode dar erro facilmente <<<"
 	apt-get install libxmlsec1-dev --yes
@@ -48,7 +48,7 @@ if [ "$PERGUNTA" == "S" ]; then
 	fi
 
 	pip install https://github.com/aricaldeira/geraldo/archive/master.zip
-	pip install pysped
+	pip install pysped --allow-external PyXMLSec --allow-unverified PyXMLSec
 
 	echo "Instalando git"
 	apt-get install git --yes
