@@ -24,11 +24,23 @@ case "$VERSAO" in
 	;;
 esac
 
-pwd
-
-echo $REPOSITORIOS
 while read line           
 do           
-    echo $line           
+	string=($line) 
+	len="${#string[@]}"
+
+	if [ ${#string[@]} -gt 0 ] && [ "${string[0]}" != "Versao" ]; then
+		if [ "${string[0]}" == "$VERSAO" ]; then
+			if 	[ "${string[3]}" == "git" ]; then
+				cmd="git clone ${string[1]} ${string[4]}"
+				echo $cmd
+				cmd="git checkout ${string[2]}"
+				echo $cmd	
+			else
+				cmd="bzr checkout --lightweight ${string[1]} ${string[4]}"
+				$cmd
+			fi
+		fi
+	fi
 done < arqs/lista-repositorios
 

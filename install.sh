@@ -5,7 +5,6 @@ set -e
 if test $# -gt 0; then
 
 	export ATUALIZAR='N'
-	export REPOSITORIOS=./arqs/lista-repositorios
 	export SENHA_BD=`date | md5sum`
 
 	SENHA_BD=${SENHA_BD:0:10}
