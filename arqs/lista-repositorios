@@ -19,3 +19,6 @@ Versao	Url												Branch				SCM		destino
 9	 	lp:brazilian-localization-data					master				bzr		data_br
 9		https://github.com/OCA/account-fiscal-rule.git	9.0					git		account-fiscal-rule
 9		https://github.com/OCA/account-payment.git		9.0					git		account-payment
+
+runbot	https://github.com/odoo/odoo.git				8.0					git		odoo
+runbot	https://github.com/Trust-Code/odoo-extra.git	master				git		odoo-extra
