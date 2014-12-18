@@ -9,7 +9,7 @@ read PERGUNTA
 if [ "$PERGUNTA" == "S" ];
 then
 	echo "Instalando banco de dados"
-	apt-get install postgresql-9.3 --yes
+	apt-get install postgresql --yes
 fi
 
 echo "Criando usuario no banco de dados: $1"
@@ -21,4 +21,3 @@ EOF
 
 #mv /opt/pg_hba.conf /etc/postgresql/9.1/main/pg_hba.conf
 #mv /opt/postgresql.conf /etc/postgresql/9.1/main/postgresql.conf
-

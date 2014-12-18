@@ -19,13 +19,9 @@ if [ "$PERGUNTA" == "S" ]; then
 		python-pybabel python-pychart python-pydot python-pyparsing python-reportlab \
 		python-simplejson python-tz python-vatnumber python-vobject python-webdav \
 		python-werkzeug python-xlwt python-yaml python-zsi python-yaml python-cups python-dev \
-		libxmlsec1-dev libxml2-dev python-setuptools python-lxml --yes
+		libxmlsec1-dev libxml2-dev python-setuptools python-lxml python-decorator python-passlib --yes
 
-	pip install unittest2
-	pip install psutil
-	pip install jinja2
-	pip install docutils
-	pip install requests
+	pip install unittest2 psutil jinja2 docutils requests pypdf
 
 	echo ">>> Instalando as dependências do Report_Aeroo_ooo <<<"
 	apt-get install python-genshi python-lxml python-cairo --yes
@@ -41,14 +37,14 @@ if [ "$PERGUNTA" == "S" ]; then
 	apt-get install libxml2-dev --yes
 
 	if [ $(uname -m) == 'x86_64' ]; then
-		pip install https://github.com/aricaldeira/pyxmlsec/archive/master.zip
+		#pip install https://github.com/aricaldeira/pyxmlsec/archive/master.zip
 		echo "skipping"
 	else
-		pip install pyxmlsec 
+		pip install pyxmlsec
 	fi
 
-	pip install https://github.com/aricaldeira/geraldo/archive/master.zip
-	pip install pysped --allow-external PyXMLSec --allow-unverified PyXMLSec
+	#pip install https://github.com/aricaldeira/geraldo/archive/master.zip
+	pip install pysped --allow-external PyXMLSec --allow-insecure PyXMLSec
 
 	echo "Instalando git"
 	apt-get install git --yes

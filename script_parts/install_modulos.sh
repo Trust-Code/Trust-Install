@@ -1,14 +1,20 @@
 #!/bin/bash
 
-echo "Digite o nome do novo banco de dados:"
+USUARIO=$1
+export DIR_PADRAO="/home/$USUARIO/odoo"
+export DIR_ATUAL=`pwd`
 
-read nome_banco
+echo ""
+echo "Instalar base de dados default? S ou N"
+read PERGUNTA
 
-echo "Carregar dados de demo? (s ou n)"
+if [ "$PERGUNTA" != "S" ]; then
+	exit 0
+fi
 
+echo "Carregar dados de demo ?"
 read carregar_demo
-
-if [ $carregar_demo == "s" ]
+if [ $carregar_demo == "S" ]
 then
 	DEMO=""
 else
@@ -16,20 +22,21 @@ else
 fi
 
 # echo "Módulos a instalar separados por virgula: "
+export modulos="base"
 
-# read modulos
+echo "Criando banco de dados: $USUARIO"
+su postgres << EOF
+	psql -c "CREATE DATABASE $USUARIO WITH ENCODING 'UTF8' OWNER $USUARIO TEMPLATE template0"
+	exit 0
+EOF
 
-#>>> módulos a serem instalados <<<
+su $USUARIO << EOF
 
-modulos=l10n_br,l10n_br_account,l10n_br_account_payment,l10n_br_account_payment_extension,l10n_br_account_product,l10n_br_base,l10n_br_crm,l10n_br_crm_zip,l10n_br_data_account,l10n_br_data_account_product,l10n_br_data_base,l10n_br_data_zip,l10n_br_delivery,l10n_br_product,l10n_br_sale,l10n_br_sale_stock,l10n_br_stock,l10n_br_zip,disable_openerp_online,html_signature,l10n_br_data_zip,contacts,forward_mail
+cd $DIR_PADRAO/odoo
+pwd
+ls
 
-echo "Criando banco de dados: $nome_banco"
+./openerp-server --config=odoo-config --load-language=pt_BR $DEMO --init=$modulos --stop-after-init --database=$USUARIO
 
-psql -U postgres -h localhost -c "CREATE DATABASE $nome_banco WITH ENCODING 'UTF8' OWNER openerp TEMPLATE template0"
-
-su openerp << EOF
-
-./openerp-server --config=/etc/openerp/openerp-server.conf --load-language=pt_BR $DEMO --init=$modulos --stop-after-init --database=$nome_banco
-
-exit
+exit 0
 EOF

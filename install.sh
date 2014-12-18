@@ -14,6 +14,7 @@ if test $# -gt 0; then
 	./script_parts/dependencias.sh $1
 	./script_parts/repositorios.sh $1
 	./script_parts/conclusao.sh $1
+	./script_parts/install_modulos.sh $1
 
 else
 	echo "<<< Invalid parameters >>>"
