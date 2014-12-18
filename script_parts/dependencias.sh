@@ -21,8 +21,8 @@ if [ "$PERGUNTA" == "S" ]; then
 		python-werkzeug python-xlwt python-yaml python-zsi python-yaml python-cups python-dev \
 		libxmlsec1-dev libxml2-dev python-setuptools python-lxml python-decorator python-passlib --yes
 
-	apt-get install nginx
-	pip install unittest2 psutil jinja2 docutils requests pypdf
+	apt-get install nginx --yes
+	pip install unittest2 psutil jinja2 docutils requests pypdf matplotlib
 
 	echo ">>> Instalando as dependências do Report_Aeroo_ooo <<<"
 	apt-get install python-genshi python-lxml python-cairo --yes
