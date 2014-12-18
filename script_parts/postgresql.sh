@@ -12,8 +12,10 @@ then
 	apt-get install postgresql --yes
 fi
 
+service postgresql restart
+
 echo "Criando usuario no banco de dados: $1"
-su postgres <<EOF
+su - postgres <<EOF
 	createuser --createdb --username postgres --no-createrole --no-superuser --no-password $1
 	psql -c "ALTER USER $1 WITH PASSWORD '$SENHA_BD'" -d template1
 	exit
