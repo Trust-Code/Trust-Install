@@ -35,7 +35,6 @@ su $USUARIO << EOF
 cd $DIR_PADRAO/odoo
 pwd
 ls
-
 ./openerp-server --config=odoo-config --load-language=pt_BR $DEMO --init=$modulos --stop-after-init --database=$USUARIO
 
 exit 0

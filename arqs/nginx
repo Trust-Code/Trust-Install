@@ -1,7 +1,7 @@
 ## OpenERP backend ##
 
 server {
-    listen 80;
+    listen <porta>;
     server_name localhost;
 
     # Specifies the maximum accepted body size of a client request,
@@ -9,8 +9,8 @@ server {
     client_max_body_size 200m;
 
     # ssl log files
-    access_log    /var/log/nginx/openerp-access.log;
-    error_log    /var/log/nginx/openerp-error.log;
+    access_log    /var/log/nginx/odoo-access.log;
+    error_log    /var/log/nginx/odoo-error.log;
 
     # add ssl specific settings
     keepalive_timeout    60;
@@ -20,7 +20,7 @@ server {
     proxy_buffer_size 128k;
 
     location / {
-        proxy_pass http://127.0.0.1:8069;
+        proxy_pass http://127.0.0.1:<odoo-porta>;
         # force timeouts if the backend dies
         proxy_next_upstream error timeout invalid_header http_500 http_502 http_503;
 

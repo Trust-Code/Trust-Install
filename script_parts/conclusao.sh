@@ -25,11 +25,14 @@ echo "Copiando arquivos de configuração"
 destino="$DIR_PADRAO/configuracao"
 atual="$DIR_ATUAL/arqs"
 
-cp "$atual/odoo.conf" "$destino/odoo-$USUARIO.conf"
-cp "$atual/nginx" "$destino/nginx-$USUARIO"
+cp "$atual/odoo.conf" "$destino/odoo-$USUARIO.conf" -f
+cp "$atual/nginx" "$destino/nginx-$USUARIO" -f
+
+sed -i.bak 's/<usuario>/'$USUARIO'/g' "$destino/odoo-$USUARIO.conf"
+sed -i.bak 's/<porta>/80/g' "$destino/nginx-$USUARIO"
+sed -i.bak 's/<odoo-porta>/8069/g' "$destino/nginx-$USUARIO"
 
 echo ">>> Criando link simbólico do arquivo odoo.conf <<<"
-
 link="/etc/init/odoo-$USUARIO.conf"
 if [ -f $link ]
 then
@@ -52,7 +55,7 @@ su  $USUARIO << EOF
 
 echo "Iniciando o openerp para gerar arquivo de configuração"
 cd $DIR_PADRAO/odoo
-pwd
+
 timeout 3 ./openerp-server --save \
 		--db_host=127.0.0.1 \
 		--db_port=5432 \
