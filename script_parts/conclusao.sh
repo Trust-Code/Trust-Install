@@ -49,7 +49,7 @@ else
 	ln -s "$destino/nginx-$USUARIO" $link
 fi
 
-export CAMINHO="addons,openerp/addons,../odoo-extra"
+export CAMINHO="addons,openerp/addons"
 
 su  $USUARIO << EOF
 

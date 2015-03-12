@@ -38,13 +38,13 @@ if [ "$PERGUNTA" == "S" ]; then
 	apt-get install libxml2-dev --yes
 
 	if [ $(uname -m) == 'x86_64' ]; then
-		#pip install https://github.com/aricaldeira/pyxmlsec/archive/master.zip
+		pip install https://github.com/aricaldeira/pyxmlsec/archive/master.zip
 		echo "skipping"
 	else
 		pip install pyxmlsec
 	fi
 
-	#pip install https://github.com/aricaldeira/geraldo/archive/master.zip
+	pip install https://github.com/aricaldeira/geraldo/archive/master.zip
 	pip install pysped --allow-external PyXMLSec --allow-insecure PyXMLSec
 
 	echo "Instalando git"

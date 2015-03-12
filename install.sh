@@ -6,6 +6,15 @@ if test $# -gt 0; then
 
 	export ATUALIZAR='N'
 	export SENHA_BD=`date | md5sum`
+	os_version=`uname -v`
+	if [[ $os_version == *"Ubuntu"* ]]; then
+		export UBUNTU=true
+		export DEBIAN=false
+	fi
+	if [[ $os_version == *"Debian"* ]]; then
+		export UBUNTU=false
+		export DEBIAN=true
+	fi
 
 	SENHA_BD=${SENHA_BD:0:10}
 

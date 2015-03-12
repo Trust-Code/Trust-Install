@@ -14,10 +14,12 @@ then
 	apt-get update
 	apt-get upgrade --yes
 
-	echo "Instalando lingua português"
-	apt-get install language-pack-pt --yes
-	locale-gen pt_BR.UTF-8
-	update-locale LANG=pt_BR.UTF-8
+	if [ $UBUNTU == true ]; then
+		echo "Instalando lingua português"
+		apt-get install language-pack-pt --yes
+		locale-gen pt_BR.UTF-8
+		update-locale LANG=pt_BR.UTF-8
+	fi
 fi
 
 echo ""
