@@ -8,10 +8,8 @@ Versao	Url												Branch				SCM		destino
 
 8		https://github.com/odoo/odoo.git 				8.0					git		odoo
 8		https://github.com/OCA/l10n-brazil.git			develop				git		localizacao
-8		https://github.com/odoobrasil-fiscal/nfe.git	develop				git		nfe
-8	 	lp:brazilian-localization-data					master				bzr		data_br
+8		https://github.com/odoo-brazil/odoo-brazil-eletronic-documents.git	develop				git		nfe
 8		https://github.com/OCA/account-fiscal-rule.git	8.0					git		account-fiscal-rule
-8		https://github.com/OCA/account-payment.git		8.0					git		account-payment
 
 9		https://github.com/odoo/odoo.git 				master				git		odoo
 9		https://github.com/OCA/l10n-brazil.git			develop				git		localizacao
