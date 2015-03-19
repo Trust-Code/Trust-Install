@@ -25,7 +25,12 @@ echo "Copiando arquivos de configuração"
 destino="$DIR_PADRAO/configuracao"
 atual="$DIR_ATUAL/arqs"
 
-cp "$atual/odoo.conf" "$destino/odoo-$USUARIO.conf" -f
+if [ $UBUNTU == true ]; then
+	cp "$atual/odoo.conf" "$destino/odoo-$USUARIO.conf" -f
+fi
+if [ $DEBIAN == true ]; then
+	cp "$atual/debian-odoo" "$destino/odoo-$USUARIO.conf" -f
+fi
 cp "$atual/nginx" "$destino/nginx-$USUARIO" -f
 
 sed -i.bak 's/<usuario>/'$USUARIO'/g' "$destino/odoo-$USUARIO.conf"
@@ -34,12 +39,20 @@ sed -i.bak 's/<odoo-porta>/8069/g' "$destino/nginx-$USUARIO"
 
 echo ">>> Criando link simbólico do arquivo odoo.conf <<<"
 link="/etc/init/odoo-$USUARIO.conf"
+if [ $DEBIAN == true ]; then
+	link="/etc/init.d/odoo-$USUARIO"
+fi
 if [ -f $link ]
 then
 	echo ">>> O link simbólico odoo.conf já existe <<<"
 else
 	cp "$destino/odoo-$USUARIO.conf" $link -f
 fi
+if [ $DEBIAN == true ]; then
+	chmod +x $link
+	update-rc.d "odoo-$USUARIO" defaults
+fi
+
 
 link="/etc/nginx/sites-enabled/nginx-$USUARIO"
 if [ -f $link ]
@@ -49,25 +62,23 @@ else
 	ln -s "$destino/nginx-$USUARIO" $link
 fi
 
-export CAMINHO="addons,openerp/addons"
+export CAMINHO="addons,openerp\/addons"
 
-su  $USUARIO << EOF
+echo "Atualizando arquivo de configuracao"
 
-echo "Iniciando o openerp para gerar arquivo de configuração"
-cd $DIR_PADRAO/odoo
+echo "Usuario: $USUARIO" 
+echo "Usuario: $SENHA_BD" 
+echo "Usuario: $CAMINHO" 
 
-timeout 3 ./openerp-server --save \
-		--db_host=127.0.0.1 \
-		--db_port=5432 \
-		--db_user=$USUARIO \
-		--db_password=$SENHA_BD \
-		--addons-path=$CAMINHO
+cp "$atual/openerp-config" "$DIR_PADRAO/odoo/odoo-config" -f
 
-exit 0
-EOF
+sed -i.bak 's/<usuario>/'$USUARIO'/g' "$DIR_PADRAO/odoo/odoo-config"
+sed -i.bak 's/<odoo-porta>/8069/g' "$DIR_PADRAO/odoo/odoo-config"
+sed -i.bak 's/<senha>/'$SENHA_BD'/g' "$DIR_PADRAO/odoo/odoo-config"
+sed -i.bak 's/<addons-path>/'$CAMINHO'/g' "$DIR_PADRAO/odoo/odoo-config"
 
-echo "Gerou arquivo de configuração"
-mv "/home/$USUARIO/.openerp_serverrc" "$DIR_PADRAO/odoo/odoo-config"
 
 echo "Ajustando as Permissões do Diretorio: $DIR_PADRAO"
 chown -R $USUARIO:$USUARIO $DIR_PADRAO
+chmod +r "$DIR_PADRAO/odoo/odoo-config"
+
