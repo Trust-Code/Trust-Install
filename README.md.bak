@@ -1,4 +1,0 @@
-Script de instalação padrão Odoo
-
-
-ola
