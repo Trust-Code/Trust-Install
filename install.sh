@@ -2,12 +2,29 @@
 
 set -e
 
-OS=$(uname -r)
+read -p "Digitar uma senha para o BANCO DE DADOS = " DB_PASS
 
+if [ -z $DB_PASS ]; then
+        DB_PASS=odoo
+        echo 'Nenhuma senha foi digitada, sendo assim será utilizado a SENHA PADRÃO = odoo'
+else
+        echo 'Voçe digitou a senha = '$DB_PASS
+fi
+
+read -p "Digitar uma senha para o USUÁRIO ADMINISTRADOR = " USER_PASS
+
+if [ -z $USER_PASS ]; then
+        USER_PASS=admin
+        echo 'Nenhuma senha foi digitada, sendo assim será utilizado a SENHA PADRÃO = admin'
+else
+        echo 'Voçe digitou a senha = '$USER_PASS
+fi
+
+OS=$(uname -r)
 if echo $OS | egrep '3.2*' ; then
 	echo deb http://get.docker.io/ubuntu docker main | sudo tee /etc/apt/sources.list.d/docker.list
 	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
-	echo ">>Atualizando o sistema e instalando o Docker<<"
+	echo ">>Atualizando o sistema<<"
 	apt-get update -qq
 	echo ">>Instalando o Docker<<"
 	apt-get install lxc-docker -y
@@ -43,7 +60,7 @@ cd /opt
 if [ ! -d odoo ]; then
 	mkdir odoo
 	cd odoo
-	git clone -b 8.0 https://github.com/odoo/odoo.git odoo
+	git clone -b 8.0 --single-branch https://github.com/odoo/odoo.git odoo
 
 #INSERIR OS REPOSITÓRIOS FALTANTES
 
@@ -78,11 +95,17 @@ if [ ! -d var/log/nginx ]; then
 	chown trustcode var/log/nginx
 fi
 
-docker run -p 80:80 -p 8090:8090 --name odoo-base \
+if test '$DB_PASS' != 'odoo'; then
+        sed -i 's/db_password = odoo/db_password = '$DB_PASS'/' /etc/odoo/odoo-config
+fi
+
+if test '$USER_PASS' != 'admin'; then
+        sed -i 's/admin_passwd = admin/admin_passwd = '$USER_PASS'/' /etc/odoo/odoo-config
+fi
+
+docker run -p 80:80 -p 8090:8090 --name odoo-base -e 'DB_PASS='$DB_PASS \
 	-v  /var/log/odoo:/var/log/odoo \
+	-v /var/log/postgres/:/var/log/postgresql \
+	-v /var/log/nginx:/var/log/nginx \
 	trustcode/trust-odoo:base
-
-#	-v /var/log/postgres/:/var/log/postgresql \
-#	-v /var/log/nginx:/var/log/nginx \
-
 
