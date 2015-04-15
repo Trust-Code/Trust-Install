@@ -68,8 +68,8 @@ if [ ! -d odoo ]; then
 		mkdir dados
 	fi
 	cd /opt
-	chown -R trustcode odoo/
-	chmod -R 700 odoo/
+	chown -R trustcode:docker odoo/
+	chmod -R 750 odoo/
 else
 	echo ">>Já existe uma instalação do Odoo no diretório padrão<<"
 fi
@@ -105,8 +105,14 @@ fi
 docker run -p 80:80 -p 8090:8090 --name trust-odoo -e 'DB_PASS='$DB_PASS \
 	-v  /var/log/odoo:/var/log/odoo \
 	-v /opt/odoo:/opt/odoo \
+	-v /etc/odoo:/etc/odoo \
 	-v /var/log/postgres:/var/log/postgresql \
 	-v /etc/supervisor/conf.d:/etc/supervisor/conf.d \
 	-v /var/log/nginx:/var/log/nginx \
 	trustcode/trust-odoo:docker
+
+
+
+
+docker run -p 80:80 -p 8090:8090 --name trust-odoo -e 'DB_PASS=123' -v  /var/log/odoo:/var/log/odoo -v /opt/odoo:/opt/odoo -v /var/log/postgres:/var/log/postgresql -v /etc/supervisor/conf.d:/etc/supervisor/conf.d -v /var/log/nginx:/var/log/nginx trustcode/trust-odoo:docker
 
