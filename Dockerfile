@@ -3,6 +3,7 @@ FROM ubuntu:14.10
 MAINTAINER	Mackilem Van der Laan <mack.vdl@gmail.com> \
 		Danimar Ribeiro <danimaribeiro@gmail.com>
 
+ENV DB_PASS odoo
 RUN apt-get update && apt-get -y upgrade
 
 # Configura o locale
@@ -30,33 +31,27 @@ ADD http://ufpr.dl.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2
 RUN apt-get install -y -f wkhtmltopdf
 RUN apt-get install -y xfonts-base xfonts-75dpi && dpkg -i /opt/sources/wkhtmltox.deb
 
-
-
 # Instala o Postgresql 9.4
 RUN apt-get install -y postgresql && service postgresql start
 
-#Configurando o Postgresql
+# Configurando o Postgresql
 USER postgres
 
 RUN /etc/init.d/postgresql start &&\
 	createuser --superuser odoo &&\
-	psql -c "ALTER user odoo WITH PASSWORD 't9@op15'"
+	psql -c "ALTER user odoo WITH PASSWORD '$DB_PASS'"
 
 user root
 
 RUN pip install pillow
 
-#Fazer com que o nginx não fique tentando reiniciar
+# Fazer com que o nginx não fique tentando reiniciar
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf 
 
 RUN apt-get install -y supervisor && mkdir -p /var/log/supervisor
-COPY /etc/odoo/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+ADD https://raw.github.com/Trust-Code/Trust-Install/docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-VOLUME ["/var/log/postgresql", \
-		"/var/lib/postgresql", \	
-		"/etc/postgresql",	\	
-		"/var/log/nginx", \
-		"/var/log/odoo"]
+VOLUME ["/var/lib/postgresql","/etc/postgresql"]
 
 RUN useradd -ms /bin/bash odoo
 
