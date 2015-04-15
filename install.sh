@@ -104,6 +104,7 @@ fi
 
 docker run -p 80:80 -p 8090:8090 --name trust-odoo -e 'DB_PASS='$DB_PASS \
 	-v  /var/log/odoo:/var/log/odoo \
+	-v /opt/odoo:/opt/odoo \
 	-v /var/log/postgres:/var/log/postgresql \
 	-v /etc/supervisor/conf.d:/etc/supervisor/conf.d \
 	-v /var/log/nginx:/var/log/nginx \
