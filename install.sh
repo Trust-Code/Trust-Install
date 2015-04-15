@@ -53,7 +53,7 @@ fi
 echo ">>Baixando arquivos de instalação<<"
 apt-get install git -y
 cd /home/trustcode
-git clone -b base https://Mackilem@bitbucket.org/trustcode/odoo_docker.git
+git clone -b docker https://github.com/Trust-Code/Trust-Install.git
 
 echo ">>Baixando o repositórios odoo<<"
 cd /opt
@@ -86,8 +86,7 @@ if [ ! -s var/run/odoo.pid ]; then
 fi
 if [ ! -d etc/odoo ]; then
 	mkdir etc/odoo
-	mv /home/trustcode/odoo_docker/odoo-config /etc/odoo/
-	mv /home/trustcode/odoo_docker/supervisord.conf /etc/odoo/
+	mv /home/trustcode/Trust-Install/odoo-config /etc/odoo/
 	chown -R trustcode etc/odoo
 fi
 if [ ! -d var/log/nginx ]; then
@@ -103,9 +102,10 @@ if test '$USER_PASS' != 'admin'; then
         sed -i 's/admin_passwd = admin/admin_passwd = '$USER_PASS'/' /etc/odoo/odoo-config
 fi
 
-docker run -p 80:80 -p 8090:8090 --name odoo-base -e 'DB_PASS='$DB_PASS \
+docker run -p 80:80 -p 8090:8090 --name trust-odoo -e 'DB_PASS='$DB_PASS \
 	-v  /var/log/odoo:/var/log/odoo \
-	-v /var/log/postgres/:/var/log/postgresql \
+	-v /var/log/postgres:/var/log/postgresql \
+	-v /etc/supervisor/conf.d:/etc/supervisor/conf.d \
 	-v /var/log/nginx:/var/log/nginx \
 	trustcode/trust-odoo:base
 
