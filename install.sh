@@ -42,7 +42,7 @@ adduser --system --group --shell=/bin/bash trustcode
 addgroup trustcode docker
 
 echo ">>Baixando o Container<<"
-docker pull trustcode/trust-odoo:base
+docker pull trustcode/trust-odoo:docker
 
 cd /home/trustcode
 if [ ! -d data ]; then
