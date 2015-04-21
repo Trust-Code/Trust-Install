@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 	##### Instalação do ODOO, Dependências e Configurações Básicas #####
 
-ADD odoo.init /etc/init.d/
+ADD conf/odoo.init /etc/init.d/
 ADD conf/odoo.conf /etc/odoo/
 ADD http://ufpr.dl.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2.1_linux-wheezy-amd64.deb /opt/sources/wkhtmltox.deb
 ADD apt-requirements /opt/sources/
