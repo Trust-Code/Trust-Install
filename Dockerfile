@@ -37,11 +37,11 @@ RUN mkdir /opt/odoo/ && cd /opt/odoo && \
 RUN apt-get --purge remove -y git python-pip && \
     apt-get autoremove -y && apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* && \
-    rm -rf /opt/sources/ && \
+    rm -rf /opt/sources/
 
 	##### Finalização do Container #####
 
-VOLUME /opt/
+VOLUME ["/opt/", "/ect/odoo"]
 WORKDIR /opt/
 EXPOSE 80 8090
 ENTRYPOINT /etc/init.d/odoo.init
