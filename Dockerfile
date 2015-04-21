@@ -45,7 +45,7 @@ RUN apt-get --purge remove git wget && \
     apt-get clean && apt-get autoremove && apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /opt/sources/ && \
-    rm /opt/depends/Pillow.tar.gz
+    rm /opt/depends/Pillow-2.8.1.tar.gz
 
 	##### Finalização do Container #####
 
