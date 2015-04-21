@@ -20,6 +20,7 @@ ttf-dejavu-core
 ucf
 x11-common
 
+gcc
 ##### Dependências Básicas para o Odoo #####
 python-dateutil
 python-feedparser 
