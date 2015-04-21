@@ -41,7 +41,7 @@ RUN apt-get --purge remove -y git python-pip && \
 
 	##### Finalização do Container #####
 
-VOLUME  ["/opt/","/etc/odoo/"]
+VOLUME  ["/opt/", "/etc/odoo/"]
 WORKDIR /opt/
 EXPOSE 80 8090
 ENTRYPOINT /etc/init.d/odoo.init
