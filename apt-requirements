@@ -23,3 +23,5 @@ x11-common
 ##### Dependências Básicas para o Odoo #####
 python-dev
 python-setuptools
+python-psycopg2
+python-lxml
