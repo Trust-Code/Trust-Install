@@ -21,6 +21,5 @@ ucf
 x11-common
 
 ##### Dependências Básicas para o Odoo #####
-python-psycopg2
 python-dev
 python-setuptools
