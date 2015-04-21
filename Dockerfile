@@ -18,7 +18,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends $(grep -v '^#' /opt/sources/requirements) && \
     apt-get install -y git supervisor && \
     dpkg -i /opt/sources/wkhtmltox.deb && \
-    tar -vzxf /opt/depends/Pillow-2.8.1.tar.gz && cd /opt/depends/Pillow-2.8.1 &&  python setup.py install
+    tar -vzxf /opt/depends/Pillow-2.8.1.tar.gz && cd /opt/depends/Pillow-2.8.1/ &&  python setup.py install
 
 RUN git clone -b master --depth=1 https://github.com/aricaldeira/pyxmlsec.git /opt/depends/pyxmlsec && \
 	cd /opt/depends/pyxmlsec/ && python setup.py install && \
