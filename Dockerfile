@@ -14,7 +14,7 @@ ADD apt-requirements /opt/sources/
 ADD pip-requirements /opt/sources/
 
 RUN apt-get update && apt-get install -y git python-pip && \
-    apt-get install -y --no-install-recommends $(grep -v '^#' /opt/sources/apt-requirements) && \
+    apt-get install -y $(grep -v '^#' /opt/sources/apt-requirements) && \
     pip install -r /opt/sources/pip-requirements && \
     dpkg -i /opt/sources/wkhtmltox.deb
 
