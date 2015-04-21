@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ADD conf/nginx.conf /etc/nginx/nginx.conf 
 ADD conf/odoo.conf /etc/odoo/odoo.conf
 ADD conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-ADD https://pypi.python.org/packages/source/P/Pillow/Pillow-2.8.1.tar.gz /opt/depends/Pillow.tar.gz
+ADD https://pypi.python.org/packages/source/P/Pillow/Pillow-2.8.1.tar.gz /opt/depends/
 ADD http://ufpr.dl.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2.1_linux-wheezy-amd64.deb /opt/sources/wkhtmltox.deb
 ADD requirements /opt/sources/
 
@@ -18,7 +18,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends $(grep -v '^#' /opt/sources/requirements) && \
     apt-get install -y git supervisor && \
     dpkg -i /opt/sources/wkhtmltox.deb && \
-    tar -vzxf /opt/depends/Pillow.tar.gz && cd Pillow/ &&  python setup.py install
+    tar -vzxf /opt/depends/Pillow-2.8.1.tar.gz && cd /opt/depends/Pillow-2.8.1 &&  python setup.py install
 
 RUN git clone -b master --depth=1 https://github.com/aricaldeira/pyxmlsec.git /opt/depends/pyxmlsec && \
 	cd /opt/depends/pyxmlsec/ && python setup.py install && \
