@@ -25,3 +25,4 @@ python-dev
 python-setuptools
 python-psycopg2
 python-lxml
+python-ldap
