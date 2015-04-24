@@ -5,28 +5,37 @@ MAINTAINER	Mackilem Van der Laan <mack.vdl@gmail.com> \
 
 ENV DEBIAN_FRONTEND noninteractive
 
-	##### Instalação do ODOO, Dependências e Configurações Básicas #####
+	##### Dependências #####
+
+ADD apt-requirements /opt/sources/
+ADD pip-requirements /opt/sources/
+ADD http://ufpr.dl.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2.1_linux-wheezy-amd64.deb /opt/sources/wkhtmltox.deb
+
+WORKDIR /opt/sources/
+RUN apt-get update && apt-get install -y python-dev && \
+    apt-get install -y --no-install-recommends $(grep -v '^#' apt-requirements) && \
+    pip install -r pip-requirements && \
+    dpkg -i wkhtmltox.deb
+
+	##### Repositórios #####
+
+ADD https://github.com/OCA/OCB/archive/8.0.tar.gz /opt/odoo/
+
+WORKDIR /opt/odoo/
+RUN tar -zxvf 8.0.tar.gz && rm 8.0.tar.gz && mv OCB-8.0 OCB
+
+	##### Configurações Odoo #####
 
 ADD conf/odoo.init /etc/init.d/
 ADD conf/odoo.conf /etc/odoo/
-ADD http://ufpr.dl.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2.1_linux-wheezy-amd64.deb /opt/sources/wkhtmltox.deb
-ADD apt-requirements /opt/sources/
-ADD pip-requirements /opt/sources/
 
-RUN apt-get update && apt-get install -y git python-pip && \
-    apt-get install -y $(grep -v '^#' /opt/sources/apt-requirements) && \
-    pip install -r /opt/sources/pip-requirements && \
-    dpkg -i /opt/sources/wkhtmltox.deb
-
-RUN mkdir /opt/odoo/ && cd /opt/odoo && \
-	git clone -b 8.0 --depth=1 https://github.com/odoo/odoo.git ocb && \
-    mkdir /var/log/odoo && \
+RUN mkdir /var/log/odoo && \
     mkdir /opt/dados && \
     touch /var/log/odoo/odoo.log && \
     touch /var/run/odoo.pid && \
-    ln -s /opt/odoo/ocb/openerp-server /usr/bin/odoo-server
-    useradd --system --home /opt/odoo --shell /bin/bash --group odoo && \
-    chmod u+x /etc/init.d/odoo.init
+    ln -s /opt/odoo/ocb/openerp-server /usr/bin/odoo-server && \
+    useradd --system --home /opt/odoo --shell /bin/bash odoo && \
+    chmod u+x /etc/init.d/odoo.init && \
     chown -R odoo:odoo /opt/odoo && \
     chown -R odoo:odoo /opt/dados && \
     chown -R odoo:odoo /var/log/odoo && \
@@ -34,15 +43,15 @@ RUN mkdir /opt/odoo/ && cd /opt/odoo && \
 
 	##### Limpeza da Instalação #####
 
-RUN apt-get --purge remove -y git python-pip && \
-    apt-get autoremove -y && apt-get autoclean && \
+RUN apt-get --purge remove -y python-pip && \
+    apt-get autoremove -y && \
+    apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /opt/sources/
 
 	##### Finalização do Container #####
 
-VOLUME ["/opt/", "/ect/odoo"]
+VOLUME ["/opt/", "/etc/odoo"]
 WORKDIR /opt/
 EXPOSE 80 8090
-ENTRYPOINT /etc/init.d/odoo.init
-CMD ["-c /etc/odoo/odoo.conf"]
+CMD [" /etc/init.d/odoo.init -c /etc/odoo/odoo.conf"]

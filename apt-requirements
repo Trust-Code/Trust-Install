@@ -1,3 +1,50 @@
+##### Necessário para o PIP #####
+python-pip
+python-setuptools
+
+##### Dependências Odoo #####
+libxml2-dev
+libxmlsec1-dev
+python-argparse
+python-Babel
+python-cups
+python-dateutil
+python-decorator
+python-docutils
+python-feedparser
+python-gdata
+python-gevent
+python-greenlet
+python-Jinja2
+python-libxslt1
+python-lxml
+python-Mako
+python-MarkupSafe
+python-mock
+python-openid
+python-passlib
+python-psutil
+python-psycopg2
+python-pychart
+python-pydot
+python-pyparsing
+python-pyPdf
+python-ldap
+python-yaml
+python-reportlab
+python-requests
+python-simplejson
+python-six
+python-tz
+python-unittest2
+python-vatnumber
+python-vobject
+python-webdav
+python-Werkzeug
+python-wsgiref
+python-xlwt
+python-zsi
+
 ##### Dependências do WKHTMLTOX #####
 xfonts-base
 xfonts-75dpi
@@ -19,10 +66,3 @@ libxrender1
 ttf-dejavu-core
 ucf
 x11-common
-
-##### Dependências Básicas para o Odoo #####
-python-dev
-python-setuptools
-python-psycopg2
-python-lxml
-python-ldap
