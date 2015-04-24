@@ -4,45 +4,38 @@ MAINTAINER	Mackilem Van der Laan <mack.vdl@gmail.com> \
 		Danimar Ribeiro <danimaribeiro@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
+ADD init.sh /etc/init.d/
 
-	##### Instalação do ODOO, Dependências e Configurações Básicas #####
+	##### Instala o Postgresql 9.4 #####
 
-ADD conf/odoo.init /etc/init.d/
-ADD conf/odoo.conf /etc/odoo/
-ADD http://ufpr.dl.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2.1_linux-wheezy-amd64.deb /opt/sources/wkhtmltox.deb
-ADD apt-requirements /opt/sources/
-ADD pip-requirements /opt/sources/
+ENV PG_VERSION 9.4
+ENV LANG pt_BR.utf8
 
-RUN apt-get update && apt-get install -y git python-pip && \
-    apt-get install -y $(grep -v '^#' /opt/sources/apt-requirements) && \
-    pip install -r /opt/sources/pip-requirements && \
-    dpkg -i /opt/sources/wkhtmltox.deb
+RUN apt-key adv --keyserver pool.sks-keyservers.net --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8 && \
+    echo 'deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main' > /etc/apt/sources.list.d/pgdg.list
 
-RUN mkdir /opt/odoo/ && cd /opt/odoo && \
-	git clone -b 8.0 --depth=1 https://github.com/odoo/odoo.git ocb && \
-    mkdir /var/log/odoo && \
-    mkdir /opt/dados && \
-    touch /var/log/odoo/odoo.log && \
-    touch /var/run/odoo.pid && \
-    ln -s /opt/odoo/ocb/openerp-server /usr/bin/odoo-server
-    useradd --system --home /opt/odoo --shell /bin/bash --group odoo && \
-    chmod u+x /etc/init.d/odoo.init
-    chown -R odoo:odoo /opt/odoo && \
-    chown -R odoo:odoo /opt/dados && \
-    chown -R odoo:odoo /var/log/odoo && \
-    chown odoo:odoo /var/run/odoo.pid
+RUN apt-get update && \
+    apt-get install -y locales && \
+    localedef -i pt_BR -c -f UTF-8 -A /usr/share/locale/locale.alias pt_BR.UTF-8
 
-	##### Limpeza da Instalação #####
+RUN apt-get install -y postgresql-$PG_VERSION
 
-RUN apt-get --purge remove -y git python-pip && \
-    apt-get autoremove -y && apt-get autoclean && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /opt/sources/
+	##### Configurando o Postgresql #####
+
+USER postgres
+RUN /etc/init.d/postgresql start && psql -c "CREATE USER odoo WITH CREATEDB SUPERUSER PASSWORD 'odoo';"
+
+USER root
+VOLUME ["/var/lib/postgresql/data","/etc/postgresql"]
+RUN mkdir -p /run/postgres && \
+    chown -R postgres /var/lib/postgresql/data && \
+    chmod g+s /run/postgresql && \
+    chmod g+s /run/postgresql && \
+    chown -R postgres:postgres /run/postgresql && \
+    chmod +x /etc/init.d/init.sh
 
 	##### Finalização do Container #####
 
-VOLUME ["/opt/", "/ect/odoo"]
-WORKDIR /opt/
-EXPOSE 80 8090
-ENTRYPOINT /etc/init.d/odoo.init
-CMD ["-c /etc/odoo/odoo.conf"]
+VOLUME /var/lib/postgresql/data
+EXPOSE 5432
+#CMD /etc/init.d/init.sh
