@@ -33,7 +33,7 @@ RUN mkdir /var/log/odoo && \
     mkdir /opt/dados && \
     touch /var/log/odoo/odoo.log && \
     touch /var/run/odoo.pid && \
-    ln -s /opt/odoo/ocb/openerp-server /usr/bin/odoo-server && \
+    ln -s /opt/odoo/OCB/openerp-server /usr/bin/odoo-server && \
     useradd --system --home /opt/odoo --shell /bin/bash odoo && \
     chmod u+x /etc/init.d/odoo.init && \
     chown -R odoo:odoo /opt/odoo && \
@@ -54,4 +54,4 @@ RUN apt-get --purge remove -y python-pip && \
 VOLUME ["/opt/", "/etc/odoo"]
 WORKDIR /opt/
 EXPOSE 80 8090
-CMD [" /etc/init.d/odoo.init -c /etc/odoo/odoo.conf"]
+CMD ["su odoo -c '/usr/bin/odoo-server -c /etc/odoo/odoo.conf'"]
