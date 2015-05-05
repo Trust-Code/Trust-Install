@@ -2,117 +2,87 @@
 
 set -e
 
-read -p "Digitar uma senha para o BANCO DE DADOS = " DB_PASS
-
-if [ -z $DB_PASS ]; then
-        DB_PASS=odoo
-        echo 'Nenhuma senha foi digitada, sendo assim será utilizado a SENHA PADRÃO = odoo'
-else
-        echo 'Voçe digitou a senha = '$DB_PASS
+# Verifica se é Ubuntu para colocar pra preencher o sudo.
+SESSION=lsb_release -si
+if [[ $SESSION -eq 'Ubuntu' ]]; then
+	SUDO=sudo
 fi
 
-read -p "Digitar uma senha para o USUÁRIO ADMINISTRADOR = " USER_PASS
+$SUDO apt-get install --yes --force-yes pwgen
 
-if [ -z $USER_PASS ]; then
-        USER_PASS=admin
+# Pergunta a senha para o Postgesql e Usuário Adm do Odoo.
+read -p "Digitar uma senha para o BANCO DE DADOS ou deixe em branco para que seja criada uma senha automáticamente (Aconselhável) = " POSTGRES_PASS
+if [ -z $POSTGRES_PASS ]; then
+        POSTGRES_PASS= pwgen -s 10 1
+        echo 'Criado uma senha automática para o banco de dados'
+	sleep 3
+fi
+
+#TODO fazer essa parte dar um loop para confirmar a senha digitada.
+read -p "Digitar uma senha para o USUÁRIO ADMINISTRADOR ou deixe em branco para usar a senha padrão = " ODOO_ADMIN
+if [ -z $ODOO_ADMIN ]; then
+        ODOO_ADMIN=admin
         echo 'Nenhuma senha foi digitada, sendo assim será utilizado a SENHA PADRÃO = admin'
 else
         echo 'Voçe digitou a senha = '$USER_PASS
+	sleep 3
 fi
 
-OS=$(uname -r)
-if echo $OS | egrep '3.2*' ; then
-	echo deb http://get.docker.io/ubuntu docker main | sudo tee /etc/apt/sources.list.d/docker.list
-	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
-	echo ">>Atualizando o sistema<<"
-	apt-get update -qq
-	echo ">>Instalando o Docker<<"
-	apt-get install lxc-docker -y
-
-elif echo $OS | egrep '3.13*' ; then
-	echo ">>Instalando o Docker<<"
-        apt-get install docker.io
+# Instalação do Docker
+echo ">>Instalando o Docker<<"
+if command_exists docker; then
+	echo "O docker já está instalado neste servidor, continuando..."
 else
-        echo "Versão do sistema não suportado pela instalação."
-        exit
-fi
+	if [[ $SESSION -eq 'Debian' ]]; then
+		echo 'deb http://http.debian.net/debian wheezy-backports main' >> /etc/apt/sources.list
+		apt-get update
+		apt-get install -t wheezy-backports linux-image-amd64
+		curl -sSL https://get.docker.com/ | sh
 
-echo ">>Configurando Usuário trustcode<<"
-adduser --system --group --shell=/bin/bash trustcode
-addgroup trustcode docker
+	elif [[ $SESSION -eq 'Ubuntu' ]]; then
+		KERNEL=$($SUDO uname -r |cut -c 1-4)  
+		if [[ $KERNEL > 3.15 ]]; then  #TODO conferir as versões dos kernel's
+			echo ">>Instalando o Docker<<"
+			$SUDO apt-get install docker.io
 
-echo ">>Baixando o Container<<"
-docker pull trustcode/trust-odoo:docker
-
-cd /home/trustcode
-if [ ! -d data ]; then
-	mkdir data
-	chown -R trustcode data
-fi
-
-echo ">>Baixando arquivos de instalação<<"
-apt-get install git -y
-cd /home/trustcode
-git clone -b docker https://github.com/Trust-Code/Trust-Install.git
-
-echo ">>Baixando o repositórios odoo<<"
-cd /opt
-if [ ! -d odoo ]; then
-	mkdir odoo
-	cd odoo
-	git clone -b 8.0 --single-branch https://github.com/odoo/odoo.git odoo
-
-#INSERIR OS REPOSITÓRIOS FALTANTES
-
-	if [ ! -d dados ]; then
-		mkdir dados
+		elif [[ $KERNEL < 3.16 ]]; then
+			$SUDO echo deb http://get.docker.io/ubuntu docker main | $SUDO tee /etc/apt/sources.list.d/docker.list
+			$SUDO apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+			echo ">>ATUALIZANDO O SISTEMA<<"
+			$SUDO apt-get update -qq
+			echo ">>INSTALANDO O DOCKER<<"
+			$SUDO apt-get install lxc-docker -y
+		else
+			echo "Versão do seu sistema não é suportado por esta instalação."
+			exit
+		fi
 	fi
-	cd /opt
-	chown -R trustcode:docker odoo/
-	chmod -R 750 odoo/
-else
-	echo ">>Já existe uma instalação do Odoo no diretório padrão<<"
 fi
 
-cd /
-if [ ! -d var/log/odoo ]; then
-	mkdir var/log/odoo
-	touch var/log/odoo/odoo.log
-	chown -R trustcode var/log/odoo
-fi
-if [ ! -s var/run/odoo.pid ]; then
-	touch var/run/odoo.pid
-	chown trustcode var/run/odoo.pid
-fi
-if [ ! -d etc/odoo ]; then
-	mkdir etc/odoo
-	mv /home/trustcode/Trust-Install/odoo-config /etc/odoo/
-	chown -R trustcode etc/odoo
-fi
-if [ ! -d var/log/nginx ]; then
-	mkdir var/log/nginx
-	chown trustcode var/log/nginx
+echo ">>CONFIGURANDO O USUÁRIO 'trustcode'<<"
+$SUDO adduser --system --group --shell=/bin/bash trustcode
+$SUDO addgroup trustcode docker
+
+echo ">>BAIXANDO IMAGENS DA TRUSTCODE<<"
+docker pull mackilem/trust-odoo
+
+echo ">>AJUSTANDO CONFIGURAÇÕES E INICIANDO OS CONTAINERS<<"
+if [[ $DB_PASS != 'odoo' ]]; then
+        sed -i 's/db_password = odoo/db_password = '$DB_PASS'/' /etc/odoo/odoo.conf
 fi
 
-if test '$DB_PASS' != 'odoo'; then
-        sed -i 's/db_password = odoo/db_password = '$DB_PASS'/' /etc/odoo/odoo-config
+if [[ $USER_PASS != 'admin' ]]; then
+        sed -i 's/admin_passwd = admin/admin_passwd = '$USER_PASS'/' /etc/odoo/odoo.conf
 fi
 
-if test '$USER_PASS' != 'admin'; then
-        sed -i 's/admin_passwd = admin/admin_passwd = '$USER_PASS'/' /etc/odoo/odoo-config
-fi
+docker run --name pg94 -e POSTGRES_PASSWORD=$POSTGRES_PASS -e POSTGRES_USER=odoo \
+	-v /var/log/postgres:/var/log/postgresql \	
+	-d postgres:9.4
 
-docker run -p 80:80 -p 8090:8090 --name trust-odoo -e 'DB_PASS='$DB_PASS \
+docker run -p 80:80 -p 8090:8090 --name trust-odoo --link pg94:pg \
 	-v  /var/log/odoo:/var/log/odoo \
-	-v /opt/odoo:/opt/odoo \
-	-v /etc/odoo:/etc/odoo \
-	-v /var/log/postgres:/var/log/postgresql \
-	-v /etc/supervisor/conf.d:/etc/supervisor/conf.d \
 	-v /var/log/nginx:/var/log/nginx \
-	trustcode/trust-odoo:docker
+	-d mackilem/trust-odoo
 
 
-
-
-docker run -p 80:80 -p 8090:8090 --name trust-odoo -e 'DB_PASS=123' -v  /var/log/odoo:/var/log/odoo -v /opt/odoo:/opt/odoo -v /var/log/postgres:/var/log/postgresql -v /etc/supervisor/conf.d:/etc/supervisor/conf.d -v /var/log/nginx:/var/log/nginx trustcode/trust-odoo:docker
 
