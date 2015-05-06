@@ -13,7 +13,7 @@ ADD http://ufpr.dl.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2
 
 WORKDIR /opt/sources/
 RUN apt-get update && apt-get install -y python-dev nginx supervisor && \
-    apt-get install -y --no-install-recommends $(grep -v '^#' apt-requirements) && \
+    apt-get install -y --no-install-recommends $(grep -v '^#' apt-requirements)
 
 RUN pip install -r pip-requirements && \
     dpkg -i wkhtmltox.deb
