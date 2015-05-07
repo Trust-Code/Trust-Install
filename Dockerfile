@@ -58,7 +58,3 @@ RUN apt-get --purge remove -y python-pip && \
 VOLUME ["/opt/", "/etc/odoo"]
 EXPOSE 80 8090
 CMD ["/usr/bin/supervisord"]
-
-#USER odoo
-#WORKDIR /usr/bin/
-#CMD ["./odoo-server","-c","/etc/odoo/odoo.conf"]
