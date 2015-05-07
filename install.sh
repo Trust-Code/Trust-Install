@@ -16,8 +16,8 @@ fi
 # Pergunta a senha para o Postgesql e Usuário Adm do Odoo.
 read -p "Por favor, digite uma senha para o BANCO DE DADOS ou deixe em branco para criar uma senha aleatória = " POSTGRES_PASS
 if [ -z $POSTGRES_PASS ]; then
-        POSTGRES_PASS= $(pwgen -s 10 1)
-        echo 'CRIANDO SENHA ALEATÓRIA'
+	echo 'CRIANDO SENHA ALEATÓRIA'
+        POSTGRES_PASS=$(pwgen -s 10 1)
 	sleep 2
 fi
 
@@ -25,9 +25,6 @@ fi
 read -p "Por favor, digite uma senha para o USUÁRIO ADMINISTRADOR ou deixe em branco para usar a senha padrão 'admin' = " ODOO_ADMIN
 if [ -z $ODOO_ADMIN ]; then
         ODOO_ADMIN=admin
-else
-        echo 'Voçe digitou a senha = '$USER_PASS
-	sleep 5
 fi
 
 # Instalação do Docker
@@ -56,22 +53,34 @@ $SUDO adduser --system --group --shell=/bin/bash trustcode
 $SUDO addgroup trustcode docker
 
 echo ">>BAIXANDO IMAGENS DA TRUSTCODE<<"
-$SUDO docker pull mackilem/trust-odoo
+$SUDO docker pull postgres:9.4
+$SUDO docker pull trustcode/trust_odoo
 
+echo ">>AJUSTANDO CONFIGURAÇÕES E INICIANDO OS CONTAINERS<<"
+if  $SUDO docker inspect --format="{{ .Name }}" pg94 2> /dev/null; then
+	echo "Já existe um container com nome pg94, o mesmo será removido."
+	$SUDO docker rm -f pg94 > /dev/null
+fi
+if  $SUDO docker inspect --format="{{ .Name }}" trust-odoo 2> /dev/null; then
+	echo "Já existe um container com nome trust-odoo, o mesmo será removido."
+	$SUDO docker rm -f trust-odoo > /dev/null
+fi
+echo "Criando Container pg94"
 $SUDO docker run --name pg94 -e POSTGRES_PASSWORD=$POSTGRES_PASS -e POSTGRES_USER=odoo \
-	-v /var/log/postgres:/var/log/postgresql \	
+	-v /var/log/postgres:/var/log/postgresql \
 	-d postgres:9.4
-
+echo "Criando Container trust-odoo"
 $SUDO docker run -p 80:80 -p 8090:8090 --name trust-odoo --link pg94:pg \
 	-v  /var/log/odoo:/var/log/odoo \
 	-v /var/log/nginx:/var/log/nginx \
-	-d mackilem/trust-odoo
+	-d trustcode/trust_odoo
 
-echo ">>AJUSTANDO CONFIGURAÇÕES E INICIANDO OS CONTAINERS<<"
-if [[ $DB_PASS != 'odoo' ]]; then
-        $SUDO docker exec -d trust-odoo sed -i 's/db_password = odoo/db_password = '$DB_PASS'/' /etc/odoo/odoo.conf
+if [[ $POSTGRES_PASS != 'odoo' ]]; then
+	echo "Alterando a Senha do Usuário do Banco de Dados..."
+        $SUDO docker exec -d trust-odoo sed -i 's/db_password= odoo/db_password = '$POSTGRES_PASS'/' /etc/odoo/odoo.conf
 fi
-
-if [[ $USER_PASS != 'admin' ]]; then
-        $SUDO docker exec -d trust-odoo sed -i 's/admin_passwd = admin/admin_passwd = '$USER_PASS'/' /etc/odoo/odoo.conf
+if [[ $ODOO_ADMIN != 'admin' ]]; then
+	echo "Alterando a Senha do Usuário Administrador"
+        $SUDO docker exec -d trust-odoo sed -i 's/admin_passwd = admin/admin_passwd = '$ODOO_ADMIN'/' /etc/odoo/odoo.conf
 fi
+echo "CONCLUÍDO"
