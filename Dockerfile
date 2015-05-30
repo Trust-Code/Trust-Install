@@ -12,7 +12,7 @@ ADD pip-requirements /opt/sources/
 ADD http://ufpr.dl.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2.1_linux-wheezy-amd64.deb /opt/sources/wkhtmltox.deb
 
 WORKDIR /opt/sources/
-RUN apt-get update && apt-get install -y python-dev nginx supervisor
+RUN apt-get update && apt-get install -y python-dev nginx supervisor git
 RUN apt-get install -y --no-install-recommends $(grep -v '^#' apt-requirements)
 
 RUN pip install -r pip-requirements && \
@@ -20,12 +20,11 @@ RUN pip install -r pip-requirements && \
 
 	##### Repositórios #####
 
-ADD https://github.com/OCA/OCB/archive/8.0.tar.gz /opt/odoo/OCB.tar.gz
-ADD https://github.com/Trust-Code/l10n-brazil/archive/8.0.zip /opt/odoo/l10n-brazil.zip
-ADD https://github.com/Trust-Code/account-fiscal-rule/archive/8.0.zip /opt/odoo/account-fiscal-rule.zip
-ADD https://github.com/Trust-Code/server-tools/archive/8.0.zip /opt/odoo/server-tools.zip
-ADD https://github.com/Trust-Code/odoo-brazil-eletronic-documents/archive/8.0.zip /opt/odoo/odoo-brazil-eletronic-documents.zip
-ADD https://github.com/Trust-Code/trust-addons/archive/8.0.zip /opt/odoo/trust-addons.zip
+RUN git clone --depth=1 http://github.com/OCA/OCB.git ocb \
+    git clone --depth=1 http://github.com/Trust-Code/odoo-brazil-eletronic-documents.git odoo-brasil \
+    git clone --depth=1 http://github.com/Trust-Code/l10n-brazil.git l10n-brasil \
+    git clone --depth=1 http://github.com/Trust-Code/account-fiscal-rule.git fiscal-rule \
+    git clone --depth=1 http://github.com/Trust-Code/trust-addons.git trust-addons
 
 RUN apt-get install -y unzip
 

@@ -48,6 +48,8 @@ python-zsi
 ##### Dependências do WKHTMLTOX #####
 xfonts-base
 xfonts-75dpi
+xfonts-encodings
+xfonts-utils
 fontconfig
 fontconfig-config
 libexpat1
@@ -62,7 +64,9 @@ libx11-data
 libxau6 libxcb1
 libxdmcp6
 libxext6
+libxfont1
+libfontenc1
 libxrender1
 ttf-dejavu-core
 ucf
-x11-common
+x11-common 
