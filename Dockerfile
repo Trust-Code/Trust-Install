@@ -21,11 +21,11 @@ RUN pip install -r pip-requirements && \
 	##### Repositórios #####
 
 WORKDIR /opt/odoo/
-RUN git clone --depth=1 http://github.com/OCA/OCB.git ocb && \
-    git clone --depth=1 http://github.com/Trust-Code/odoo-brazil-eletronic-documents.git odoo-brasil && \
-    git clone --depth=1 http://github.com/Trust-Code/l10n-brazil.git l10n-brasil && \
-    git clone --depth=1 http://github.com/Trust-Code/account-fiscal-rule.git fiscal-rule && \
-    git clone --depth=1 http://github.com/Trust-Code/trust-addons.git trust-addons
+RUN git clone --depth=1 http://github.com/OCA/OCB.git ocb
+RUN git clone --depth=1 http://github.com/Trust-Code/odoo-brazil-eletronic-documents.git odoo-brasil
+RUN git clone --depth=1 http://github.com/Trust-Code/l10n-brazil.git l10n-brasil
+RUN git clone --depth=1 http://github.com/Trust-Code/account-fiscal-rule.git fiscal-rule
+RUN git clone --depth=1 http://github.com/Trust-Code/trust-addons.git trust-addons
 
 
 	##### Configurações Odoo #####
@@ -48,7 +48,7 @@ RUN mkdir /var/log/odoo && \
 
 	##### Limpeza da Instalação #####
 
-RUN apt-get --purge remove -y python-pip && \
+RUN apt-get --purge remove -y python-pip git && \
     apt-get autoremove -y && \
     apt-get autoclean && \
     rm -rf /var/lib/apt/lists/* && \
