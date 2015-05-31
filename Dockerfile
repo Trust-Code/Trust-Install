@@ -20,10 +20,10 @@ RUN pip install -r pip-requirements && \
 
 	##### Repositórios #####
 
-RUN git clone --depth=1 http://github.com/OCA/OCB.git ocb \
-    git clone --depth=1 http://github.com/Trust-Code/odoo-brazil-eletronic-documents.git odoo-brasil \
-    git clone --depth=1 http://github.com/Trust-Code/l10n-brazil.git l10n-brasil \
-    git clone --depth=1 http://github.com/Trust-Code/account-fiscal-rule.git fiscal-rule \
+RUN git clone --depth=1 http://github.com/OCA/OCB.git ocb && \
+    git clone --depth=1 http://github.com/Trust-Code/odoo-brazil-eletronic-documents.git odoo-brasil && \
+    git clone --depth=1 http://github.com/Trust-Code/l10n-brazil.git l10n-brasil && \
+    git clone --depth=1 http://github.com/Trust-Code/account-fiscal-rule.git fiscal-rule && \
     git clone --depth=1 http://github.com/Trust-Code/trust-addons.git trust-addons
 
 RUN apt-get install -y unzip
