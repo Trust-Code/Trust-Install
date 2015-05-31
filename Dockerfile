@@ -20,21 +20,12 @@ RUN pip install -r pip-requirements && \
 
 	##### Repositórios #####
 
+WORKDIR /opt/odoo/
 RUN git clone --depth=1 http://github.com/OCA/OCB.git ocb && \
     git clone --depth=1 http://github.com/Trust-Code/odoo-brazil-eletronic-documents.git odoo-brasil && \
     git clone --depth=1 http://github.com/Trust-Code/l10n-brazil.git l10n-brasil && \
     git clone --depth=1 http://github.com/Trust-Code/account-fiscal-rule.git fiscal-rule && \
     git clone --depth=1 http://github.com/Trust-Code/trust-addons.git trust-addons
-
-RUN apt-get install -y unzip
-
-WORKDIR /opt/odoo/
-RUN tar -zxvf OCB.tar.gz && rm OCB.tar.gz && mv OCB-8.0 OCB
-RUN unzip l10n-brazil.zip && rm l10n-brazil.zip && mv l10n-brazil-8.0 l10n-brazil
-RUN unzip account-fiscal-rule.zip && rm account-fiscal-rule.zip && mv account-fiscal-rule-8.0 account-fiscal-rule
-RUN unzip server-tools.zip && rm server-tools.zip && mv server-tools-8.0 server-tools
-RUN unzip odoo-brazil-eletronic-documents.zip && rm odoo-brazil-eletronic-documents.zip && mv odoo-brazil-eletronic-documents-8.0 odoo-brazil-eletronic-documents
-RUN unzip trust-addons.zip && rm trust-addons.zip && mv trust-addons-8.0 trust-addons
 
 
 	##### Configurações Odoo #####
@@ -42,8 +33,6 @@ RUN unzip trust-addons.zip && rm trust-addons.zip && mv trust-addons-8.0 trust-a
 ADD conf/odoo.conf /etc/odoo/
 ADD conf/nginx.conf /etc/nginx/
 ADD conf/supervisord.conf /etc/supervisor/supervisord.conf
-#mkdir -p /var/log/supervisor
-
 
 RUN mkdir /var/log/odoo && \
     mkdir /opt/dados && \
