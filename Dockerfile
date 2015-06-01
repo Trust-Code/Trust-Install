@@ -26,7 +26,7 @@ RUN git clone --depth=1 http://github.com/Trust-Code/odoo-brazil-eletronic-docum
 RUN git clone --depth=1 http://github.com/Trust-Code/l10n-brazil.git l10n-brasil
 RUN git clone --depth=1 http://github.com/Trust-Code/account-fiscal-rule.git fiscal-rule
 RUN git clone --depth=1 http://github.com/Trust-Code/trust-addons.git trust-addons
-
+WORKDIR /opt
 
 	##### Configurações Odoo #####
 
@@ -39,7 +39,7 @@ RUN mkdir /var/log/odoo && \
     touch /var/log/odoo/odoo.log && \
     touch /var/run/odoo.pid && \
     ln -s /opt/odoo/OCB/openerp-server /usr/bin/odoo-server && \
-    useradd --system --home /opt/odoo --shell /bin/bash odoo && \
+    useradd --system --home /opt --shell /bin/bash odoo && \
     chown -R odoo:odoo /opt/odoo && \
     chown -R odoo:odoo /etc/odoo/odoo.conf && \
     chown -R odoo:odoo /opt/dados && \
