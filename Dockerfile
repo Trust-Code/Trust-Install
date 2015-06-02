@@ -4,12 +4,9 @@ MAINTAINER	Mackilem Van der Laan <mack.vdl@gmail.com> \
 		Danimar Ribeiro <danimaribeiro@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive
+ENV LC_ALL pt_BR.UTF-8
 
 	##### Dependências #####
-
-# Configura o locale
-RUN locale-gen pt_BR.UTF-8
-RUN update-locale LANG=pt_BR.UTF-8
 
 ADD apt-requirements /opt/sources/
 ADD pip-requirements /opt/sources/
