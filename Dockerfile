@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ADD apt-requirements /opt/sources/
 ADD pip-requirements /opt/sources/
-ADD http://ufpr.dl.sourceforge.net/project/wkhtmltopdf/0.12.2.1/wkhtmltox-0.12.2.1_linux-wheezy-amd64.deb /opt/sources/wkhtmltox.deb
+ADD http://sourceforge.net/projects/wkhtmltopdf/files/archive/0.12.1/wkhtmltox-0.12.1_linux-trusty-amd64.deb /opt/sources/wkhtmltox.deb
 
 WORKDIR /opt/sources/
 RUN apt-get update && apt-get install -y python-dev nginx supervisor git
