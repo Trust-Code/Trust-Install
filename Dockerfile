@@ -7,6 +7,10 @@ ENV DEBIAN_FRONTEND noninteractive
 
 	##### Dependências #####
 
+# Configura o locale
+RUN locale-gen pt_BR.UTF-8
+RUN update-locale LANG=pt_BR.UTF-8
+
 ADD apt-requirements /opt/sources/
 ADD pip-requirements /opt/sources/
 ADD http://sourceforge.net/projects/wkhtmltopdf/files/archive/0.12.1/wkhtmltox-0.12.1_linux-wheezy-amd64.deb/download /opt/sources/wkhtmltox.deb
