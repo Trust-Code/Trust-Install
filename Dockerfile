@@ -26,6 +26,7 @@ RUN git clone --depth=1 http://github.com/Trust-Code/odoo-brazil-eletronic-docum
 RUN git clone --depth=1 http://github.com/Trust-Code/l10n-brazil.git l10n-brasil
 RUN git clone --depth=1 http://github.com/Trust-Code/account-fiscal-rule.git fiscal-rule
 RUN git clone --depth=1 http://github.com/Trust-Code/trust-addons.git trust-addons
+RUN git clone --depth=1 http://github.com/Trust-Code/server-tools.git server-tools
 WORKDIR /opt
 
 	##### Configurações Odoo #####
