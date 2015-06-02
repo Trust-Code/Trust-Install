@@ -21,8 +21,8 @@ RUN pip install -r pip-requirements && \
 	##### Repositórios #####
 
 WORKDIR /opt/odoo/
-RUN git clone --depth=1 http://github.com/OCA/OCB.git ocb
-RUN git clone --depth=1 http://github.com/Trust-Code/odoo-brazil-eletronic-documents.git odoo-brasil
+RUN git clone --depth=1 http://github.com/OCA/OCB.git OCB
+RUN git clone --depth=1 http://github.com/Trust-Code/odoo-brazil-eletronic-documents.git eletronic-docs
 RUN git clone --depth=1 http://github.com/Trust-Code/l10n-brazil.git l10n-brasil
 RUN git clone --depth=1 http://github.com/Trust-Code/account-fiscal-rule.git fiscal-rule
 RUN git clone --depth=1 http://github.com/Trust-Code/trust-addons.git trust-addons
